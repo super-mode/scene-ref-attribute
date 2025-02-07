@@ -7,6 +7,12 @@ using Object = UnityEngine.Object;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
+#if UNITY_2021_2_OR_NEWER
+using UnityEditor.SceneManagement;
+#else
+using UnityEditor.Experimental.SceneManagement;
+#endif
+
 #if UNITY_EDITOR
 
 using UnityEditor;
@@ -299,7 +305,10 @@ namespace KBCore.Refs
                     break;
 
                 case RefLoc.Scene:
-                    value = GetComponentsInScene(elementType, includeInactive, isCollection, excludeSelf);
+                    if (PrefabStageUtility.GetCurrentPrefabStage() == null) // ie. is in scene editor not prefab editor mode
+                    {
+                        value = GetComponentsInScene(elementType, includeInactive, isCollection, excludeSelf);
+                    }
                     break;
                 default:
                     throw new Exception($"Unhandled Loc={attr.Loc}");
