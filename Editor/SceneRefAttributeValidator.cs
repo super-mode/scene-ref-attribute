@@ -312,9 +312,27 @@ namespace KBCore.Refs
                     }
                     else
                     {
-                        value = isCollection
-                        ? prefabStage.prefabContentsRoot.GetComponentsInChildren(elementType, includeInactive)
-                        : prefabStage.prefabContentsRoot.GetComponentInChildren(elementType, includeInactive); // TODO: apply `excludeSelf`
+                        // // below pops `InvalidOperationException: Requesting 'prefabContentsRoot' from Awake and OnEnable is not supported`
+                        // // occurs because Unity's Prefab Editor environment is not fully initialized when Awake or OnEnable is called. 
+                        // // Accessing PrefabStageUtility.GetCurrentPrefabStage() or prefabContentsRoot during these lifecycle events is restricted by Unity to prevent inconsistencies in the prefab system.
+
+                        // value = isCollection
+                        // ? prefabStage.prefabContentsRoot.GetComponentsInChildren(elementType, includeInactive)
+                        // : prefabStage.prefabContentsRoot.GetComponentInChildren(elementType, includeInactive); // TODO: apply `excludeSelf`
+
+                        // // deferring execution isn't a magic bullet w/o much refactoring because really the entire `UpdateRef` call needs to be deferred
+                        // // not too sure also if there will be any unintended consequences...
+                        // // also we can see that this method is returning an `object` that its caller is expecting, so pretty sure things needs to be re-architected to make this work
+                        // // all things considered definitely doesn't seem worth it - this specific use-case may not be useful enough to warrant the effort
+
+                        // EditorApplication.delayCall += () =>
+                        // {
+                        //     Debug.Log($"Editing prefab: {prefabStage.prefabContentsRoot.name} -> {elementType}");
+
+                        //     value = isCollection
+                        //     ? prefabStage.prefabContentsRoot.GetComponentsInChildren(elementType, includeInactive)
+                        //     : prefabStage.prefabContentsRoot.GetComponentInChildren(elementType, includeInactive); // TODO: apply `excludeSelf`
+                        // };
                     }
                     break;
                 default:
