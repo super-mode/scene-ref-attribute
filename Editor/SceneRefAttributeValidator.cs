@@ -305,9 +305,16 @@ namespace KBCore.Refs
                     break;
 
                 case RefLoc.Scene:
-                    if (PrefabStageUtility.GetCurrentPrefabStage() == null) // ie. is in scene editor not prefab editor mode
+                    var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+                    if (prefabStage == null)  // ie. is in scene editor not prefab editor mode
                     {
                         value = GetComponentsInScene(elementType, includeInactive, isCollection, excludeSelf);
+                    }
+                    else
+                    {
+                        value = isCollection
+                        ? prefabStage.prefabContentsRoot.GetComponentsInChildren(elementType, includeInactive)
+                        : prefabStage.prefabContentsRoot.GetComponentInChildren(elementType, includeInactive); // TODO: apply `excludeSelf`
                     }
                     break;
                 default:
