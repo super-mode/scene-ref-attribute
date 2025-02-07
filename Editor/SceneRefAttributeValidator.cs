@@ -205,7 +205,14 @@ namespace KBCore.Refs
                 FieldInfo field = attributedField.FieldInfo;
                 field.SetValue(c, null);
 #if UNITY_EDITOR
-                EditorUtility.SetDirty(c);
+                if(PrefabUtility.IsPartOfPrefabInstance(c))
+                {
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(c);
+                }
+                else
+                {
+                    EditorUtility.SetDirty(c);
+                }
 #endif
             }
         }
@@ -351,7 +358,14 @@ namespace KBCore.Refs
 #if UNITY_EDITOR
                 if (existingValue != null)
                 {
-                    EditorUtility.SetDirty(component);
+                    if(PrefabUtility.IsPartOfPrefabInstance(component))
+                    {
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(component);
+                    }
+                    else
+                    {
+                        EditorUtility.SetDirty(component);
+                    }
                 }
 #endif
                 return null;
@@ -397,7 +411,14 @@ namespace KBCore.Refs
             }
 
 #if UNITY_EDITOR
-            EditorUtility.SetDirty(component);
+            if(PrefabUtility.IsPartOfPrefabInstance(component))
+            {
+                PrefabUtility.RecordPrefabInstancePropertyModifications(component);
+            }
+            else
+            {
+                EditorUtility.SetDirty(component);
+            }
 #endif
             return value;
         }
